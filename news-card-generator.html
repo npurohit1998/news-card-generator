@@ -4,307 +4,448 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>News Card Generator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --accent:#ff4655;
-  --ui-bg:#080a0f;--ui-surface:#10131a;--ui-border:#1e2332;
-  --ui-text:#e8e6e0;--ui-muted:#5a5f72;
+/* ============================================================
+   EASY CUSTOMIZATION — edit these to change your card design
+   ============================================================ */
+:root {
+  --accent:      #ff4655;   /* red stripe, source text, buttons */
+  --card-bg:     #0d0f14;   /* card background                  */
+  --headline:    #f0ede6;   /* headline text color              */
+  --summary:     #9ea3b5;   /* summary text color               */
+  --brand-col:   #555a6e;   /* bottom branding color            */
+  --divider:     #1e2130;   /* thin rule color                  */
+
+  --ui-bg:       #080a0f;
+  --ui-surface:  #10131a;
+  --ui-border:   #1e2332;
+  --ui-text:     #e8e6e0;
+  --ui-muted:    #5a5f72;
 }
+/* ============================================================ */
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--ui-bg);color:var(--ui-text);
-  min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 80px}
-header{text-align:center;margin-bottom:40px;animation:fadeUp .6s ease both}
-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,6vw,3.8rem);letter-spacing:.04em;line-height:1}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--ui-bg);color:var(--ui-text);
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;padding:36px 18px 80px;
+}
+
+/* Header */
+header{text-align:center;margin-bottom:36px;animation:fadeUp .5s ease both}
+header h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.6rem,6vw,4rem);
+  letter-spacing:.04em;line-height:1;
+}
 header h1 span{color:var(--accent)}
-header p{margin-top:10px;font-size:.95rem;color:var(--ui-muted);max-width:480px;line-height:1.6}
-.panel{width:100%;max-width:640px;background:var(--ui-surface);border:1px solid var(--ui-border);
-  border-radius:16px;padding:32px;animation:fadeUp .7s .1s ease both}
-.steps{display:flex;gap:8px;margin-bottom:28px}
-.step{flex:1;padding:10px 6px;border-radius:8px;background:var(--ui-bg);border:1px solid var(--ui-border);
-  text-align:center;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
-  color:var(--ui-muted);transition:all .3s}
-.step.active{background:#1a0d10;border-color:var(--accent);color:var(--accent)}
-.step.done{background:#0d1a10;border-color:#2a6640;color:#55d18e}
-label{display:block;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--ui-muted);margin-bottom:7px}
-input[type="text"],textarea{width:100%;background:var(--ui-bg);border:1px solid var(--ui-border);
-  border-radius:10px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:.95rem;
-  color:var(--ui-text);outline:none;transition:border-color .2s}
+header p{margin-top:9px;font-size:.93rem;color:var(--ui-muted);line-height:1.6;max-width:460px}
+
+/* Panel */
+.panel{
+  width:100%;max-width:620px;
+  background:var(--ui-surface);
+  border:1px solid var(--ui-border);
+  border-radius:16px;padding:30px;
+  animation:fadeUp .6s .08s ease both;
+}
+
+/* How-to banner */
+.howto{
+  background:var(--ui-bg);border:1px solid var(--ui-border);
+  border-radius:10px;padding:14px 16px;
+  margin-bottom:24px;font-size:.83rem;
+  color:var(--ui-muted);line-height:1.7;
+}
+.howto strong{color:var(--ui-text);display:block;margin-bottom:4px;font-size:.88rem}
+.howto ol{padding-left:18px}
+.howto li{margin-bottom:2px}
+
+/* Image upload zone */
+.upload-zone{
+  border:2px dashed var(--ui-border);border-radius:10px;
+  padding:22px;text-align:center;cursor:pointer;
+  transition:border-color .2s,background .2s;
+  margin-bottom:0;position:relative;
+}
+.upload-zone:hover{border-color:var(--accent);background:#0f1118}
+.upload-zone input[type="file"]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.upload-zone .uz-icon{font-size:1.8rem;margin-bottom:6px}
+.upload-zone p{font-size:.85rem;color:var(--ui-muted)}
+.upload-zone p strong{color:var(--ui-text)}
+#imgPreview{
+  width:100%;border-radius:8px;margin-top:12px;
+  display:none;max-height:180px;object-fit:cover;
+}
+
+/* Fields */
+label{
+  display:block;font-size:.76rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ui-muted);margin-bottom:7px;
+}
+input[type="text"],textarea{
+  width:100%;background:var(--ui-bg);
+  border:1px solid var(--ui-border);border-radius:10px;
+  padding:12px 15px;font-family:'DM Sans',sans-serif;
+  font-size:.94rem;color:var(--ui-text);outline:none;
+  transition:border-color .2s;
+}
 input[type="text"]:focus,textarea:focus{border-color:var(--accent)}
 input::placeholder,textarea::placeholder{color:var(--ui-muted)}
-textarea{resize:vertical;min-height:70px}
-.field+.field{margin-top:16px}
-hr.sep{margin:24px 0;border:none;border-top:1px solid var(--ui-border)}
-.sec-title{font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ui-muted);margin-bottom:18px}
-button{padding:13px 20px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;
-  font-weight:600;cursor:pointer;border:none;transition:opacity .2s,transform .12s}
-button:active{transform:scale(.97)}
-.btn-p{background:var(--accent);color:#fff;width:100%;margin-top:14px}
-.btn-p:hover{opacity:.88}
-.btn-p:disabled{opacity:.4;cursor:not-allowed}
-#status{margin-top:14px;padding:11px 16px;border-radius:8px;font-size:.88rem;line-height:1.5;display:none}
-#status.info{background:#0f1520;border:1px solid var(--ui-border);color:var(--ui-muted)}
-#status.ok{background:#0d1a10;border:1px solid #2a6640;color:#55d18e}
+textarea{resize:vertical;min-height:68px}
+.field{margin-top:18px}
+
+/* Character counter */
+.field-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.char-count{font-size:.72rem;color:var(--ui-muted)}
+.char-count.warn{color:#ffaa44}
+.char-count.over{color:#ff6060}
+
+/* Buttons */
+#generateBtn{
+  margin-top:24px;width:100%;padding:14px;
+  background:var(--accent);color:#fff;border:none;
+  border-radius:10px;font-family:'DM Sans',sans-serif;
+  font-size:1rem;font-weight:600;cursor:pointer;
+  transition:opacity .2s,transform .12s;
+}
+#generateBtn:hover{opacity:.88}
+#generateBtn:active{transform:scale(.98)}
+#clearBtn{
+  margin-top:10px;width:100%;padding:11px;
+  background:var(--ui-bg);color:var(--ui-muted);
+  border:1px solid var(--ui-border);border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:.88rem;
+  font-weight:500;cursor:pointer;transition:background .2s;
+}
+#clearBtn:hover{background:#13161f}
+
+/* Status */
+#status{
+  margin-top:14px;padding:11px 15px;border-radius:8px;
+  font-size:.87rem;display:none;
+}
 #status.err{background:#1a0d0d;border:1px solid #6b2020;color:#ff7070}
-#status.loading{background:#0f1520;border:1px solid var(--ui-border);color:#aab0c8}
-.spin{display:inline-block;width:13px;height:13px;border:2px solid #ffffff33;border-top-color:#aab0c8;
-  border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.tip{margin-top:14px;padding:12px 16px;background:var(--ui-bg);border:1px solid var(--ui-border);
-  border-radius:8px;font-size:.82rem;color:var(--ui-muted);line-height:1.6}
-.tip strong{color:var(--ui-text)}
-#outputSection{width:100%;max-width:640px;margin-top:36px;display:none;animation:fadeUp .5s ease both}
-#outputSection h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.06em;
-  color:var(--ui-text);margin-bottom:16px}
+
+/* Output */
+#outputSection{
+  width:100%;max-width:620px;margin-top:32px;
+  display:none;animation:fadeUp .4s ease both;
+}
+#outputSection h2{
+  font-family:'Bebas Neue',sans-serif;font-size:1.55rem;
+  letter-spacing:.06em;color:var(--ui-text);margin-bottom:14px;
+}
 #cardCanvas{width:100%;border-radius:12px;border:1px solid var(--ui-border);display:block}
-#downloadBtn{margin-top:14px;width:100%;background:var(--accent);color:#fff;border:none;
-  padding:14px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+#downloadBtn{
+  margin-top:13px;width:100%;background:var(--accent);
+  color:#fff;border:none;padding:14px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:1rem;
+  font-weight:600;cursor:pointer;transition:opacity .2s;
+}
 #downloadBtn:hover{opacity:.88}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+#newCardBtn{
+  margin-top:10px;width:100%;padding:11px;
+  background:var(--ui-bg);color:var(--ui-muted);
+  border:1px solid var(--ui-border);border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:.88rem;
+  font-weight:500;cursor:pointer;transition:background .2s;
+}
+#newCardBtn:hover{background:#13161f}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
 </style>
 </head>
 <body>
+
 <header>
   <h1>News<span>Card</span> Generator</h1>
-  <p>Paste a news URL — AI reads the article and builds your card automatically.</p>
+  <p>Fill in your article details, upload a photo, and get a ready-to-share 1080×1080 card.</p>
 </header>
+
 <div class="panel">
-  <div class="steps">
-    <div class="step active" id="step1">① Paste URL</div>
-    <div class="step" id="step2">② AI Reads</div>
-    <div class="step" id="step3">③ Generate</div>
+
+  <!-- How to use -->
+  <div class="howto">
+    <strong>📋 How to use</strong>
+    <ol>
+      <li>Open any news article in your browser</li>
+      <li>Copy the headline &amp; summary from the article</li>
+      <li>Right-click the article image → "Save image" or "Copy image address"</li>
+      <li>Fill the fields below → click <strong>Generate Card</strong></li>
+    </ol>
   </div>
+
+  <!-- Image upload -->
   <div class="field">
-    <label for="urlInput">Article URL</label>
-    <input type="text" id="urlInput" placeholder="https://www.bbc.com/news/some-article"/>
+    <label>Featured Image — upload or paste URL below</label>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="imgFile" accept="image/*"/>
+      <div class="uz-icon">🖼️</div>
+      <p><strong>Click to upload</strong> or drag &amp; drop an image</p>
+      <p>JPG, PNG, WEBP supported</p>
+      <img id="imgPreview" alt="preview"/>
+    </div>
   </div>
-  <button class="btn-p" id="fetchBtn">⚡ Fetch Article with AI</button>
+
+  <div class="field">
+    <label for="imgUrl">— OR paste image URL instead</label>
+    <input type="text" id="imgUrl" placeholder="https://example.com/photo.jpg"/>
+  </div>
+
+  <!-- Headline -->
+  <div class="field">
+    <div class="field-row">
+      <label for="titleInput">Headline *</label>
+      <span class="char-count" id="titleCount">0 / 120</span>
+    </div>
+    <textarea id="titleInput" rows="2" placeholder="Paste the article headline here…" maxlength="200"></textarea>
+  </div>
+
+  <!-- Summary -->
+  <div class="field">
+    <div class="field-row">
+      <label for="descInput">Summary</label>
+      <span class="char-count" id="descCount">0 / 200</span>
+    </div>
+    <textarea id="descInput" rows="3" placeholder="Paste a short description or summary…" maxlength="400"></textarea>
+  </div>
+
+  <!-- Source -->
+  <div class="field">
+    <label for="domainInput">Source / Publication Name</label>
+    <input type="text" id="domainInput" placeholder="e.g.  BBC News  /  The Hindu  /  Reuters"/>
+  </div>
+
   <div id="status"></div>
-  <hr class="sep"/>
-  <p class="sec-title">Article Details — review &amp; edit if needed</p>
-  <div class="field">
-    <label for="titleInput">Headline</label>
-    <textarea id="titleInput" rows="2" placeholder="Filled automatically by AI, or type here…"></textarea>
-  </div>
-  <div class="field">
-    <label for="descInput">Summary</label>
-    <textarea id="descInput" rows="3" placeholder="Filled automatically by AI, or type here…"></textarea>
-  </div>
-  <div class="field">
-    <label for="imgInput">Featured Image URL</label>
-    <input type="text" id="imgInput" placeholder="Filled automatically by AI, or paste an image URL…"/>
-  </div>
-  <div class="field">
-    <label for="domainInput">Source / Publication</label>
-    <input type="text" id="domainInput" placeholder="e.g. bbc.com"/>
-  </div>
-  <div class="tip">
-    💡 <strong>No URL?</strong> You can skip the fetch step and just type the details above manually, then click Generate Card.
-  </div>
-  <hr class="sep"/>
-  <button class="btn-p" id="generateBtn">✦ Generate Card</button>
+
+  <button id="generateBtn">✦ Generate Card</button>
+  <button id="clearBtn">✕ Clear All Fields</button>
+
 </div>
 
+<!-- Output -->
 <div id="outputSection">
   <h2>Your News Card</h2>
   <canvas id="cardCanvas" width="1080" height="1080"></canvas>
   <button id="downloadBtn">⬇ Download JPG</button>
+  <button id="newCardBtn">← Make Another Card</button>
 </div>
 
 <script>
 /* ============================================================
-   CARD DESIGN — change these to customise your card
+   CARD DESIGN SETTINGS — edit freely to customise
    ============================================================ */
 const CARD = {
-  w:1080, h:1080, imgH:460, pad:54,
-  bgColor:'#0d0f14',
-  accent:'#ff4655',
-  headlineCol:'#f0ede6',
-  summaryCol:'#9ea3b5',
-  brandCol:'#555a6e',
-  dividerCol:'#1e2130',
-  headSz:56, sumSz:31, brandSz:21,
-  brandText:'NewsCard Generator',   // ← change your branding here
+  w: 1080, h: 1080, imgH: 460, pad: 54,
+  bgColor:     '#0d0f14',
+  accent:      '#ff4655',
+  headlineCol: '#f0ede6',
+  summaryCol:  '#9ea3b5',
+  brandCol:    '#555a6e',
+  dividerCol:  '#1e2130',
+  headSz: 56, sumSz: 31, brandSz: 21,
+  brandText: 'NewsCard Generator',  // ← change your branding here
 };
 /* ============================================================ */
 
-function setStatus(html, type='info'){
-  const el=document.getElementById('status');
-  el.innerHTML=html; el.className=type; el.style.display='block';
-}
-function clearStatus(){
-  const el=document.getElementById('status');
-  el.style.display='none'; el.innerHTML='';
-}
-function setStep(n){
-  [1,2,3].forEach(i=>{
-    const el=document.getElementById('step'+i);
-    el.classList.remove('active','done');
-    if(i<n) el.classList.add('done');
-    if(i===n) el.classList.add('active');
-  });
-}
+let uploadedImageDataURL = null;
 
-// ── Claude AI fetch with web_search ──────────────────────────
-async function fetchWithAI(url) {
-  const prompt = `Please visit this URL and extract the article information: ${url}
-
-Return ONLY a raw JSON object (no markdown, no code fences, no explanation) with exactly these keys:
-{"title":"headline text","desc":"1-2 sentence summary","image":"full image URL or empty string","domain":"site domain without www"}`;
-
-  const resp = await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      messages:[{role:'user',content:prompt}]
-    })
-  });
-  if(!resp.ok){
-    const e=await resp.json().catch(()=>({}));
-    throw new Error(e.error?.message||'API error '+resp.status);
-  }
-  const data=await resp.json();
-  const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
-  const m=text.match(/\{[\s\S]*?\}/);
-  if(!m) throw new Error('No JSON found in AI response');
-  return JSON.parse(m[0]);
-}
-
-document.getElementById('fetchBtn').addEventListener('click',async()=>{
-  const url=document.getElementById('urlInput').value.trim();
-  if(!url){setStatus('Please enter a URL first.','err');return;}
-  document.getElementById('fetchBtn').disabled=true;
-  setStep(2);
-  setStatus('<span class="spin"></span>AI is reading the article… (takes ~10–15 seconds)','loading');
-  try{
-    const d=await fetchWithAI(url);
-    document.getElementById('titleInput').value  = d.title  ||'';
-    document.getElementById('descInput').value   = d.desc   ||'';
-    document.getElementById('imgInput').value    = d.image  ||'';
-    document.getElementById('domainInput').value = d.domain ||new URL(url).hostname.replace('www.','');
-    setStep(3);
-    setStatus('✓ Done! Review the details above, then click Generate Card.','ok');
-  }catch(e){
-    setStatus('AI could not fetch the article: '+e.message+'<br><br>No problem — just fill in the fields manually and click Generate Card.','err');
-    setStep(1);
-  }finally{
-    document.getElementById('fetchBtn').disabled=false;
-  }
+// ── Image upload preview ──────────────────────────────────────
+document.getElementById('imgFile').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    uploadedImageDataURL = e.target.result;
+    const preview = document.getElementById('imgPreview');
+    preview.src = uploadedImageDataURL;
+    preview.style.display = 'block';
+    document.getElementById('imgUrl').value = '';
+  };
+  reader.readAsDataURL(file);
 });
 
-// ── Card drawing ──────────────────────────────────────────────
-function wrapText(ctx,text,x,y,maxW,lineH,maxLines){
-  const words=text.split(' ');let line='',drawn=0;
-  for(let i=0;i<words.length;i++){
-    const test=line+(line?' ':'')+words[i];
-    if(ctx.measureText(test).width>maxW&&line){
-      if(drawn>=maxLines-1){
-        while(ctx.measureText(line+'…').width>maxW&&line.length)line=line.slice(0,-1).trimEnd();
-        ctx.fillText(line+'…',x,y);return y+lineH;
+// ── Character counters ────────────────────────────────────────
+function setupCounter(inputId, countId, warn, max) {
+  const el  = document.getElementById(inputId);
+  const cnt = document.getElementById(countId);
+  el.addEventListener('input', () => {
+    const n = el.value.length;
+    cnt.textContent = `${n} / ${max}`;
+    cnt.className = 'char-count' + (n > max ? ' over' : n > warn ? ' warn' : '');
+  });
+}
+setupCounter('titleInput', 'titleCount', 90,  120);
+setupCounter('descInput',  'descCount',  160, 200);
+
+// ── Clear all fields ──────────────────────────────────────────
+document.getElementById('clearBtn').addEventListener('click', () => {
+  ['titleInput','descInput','domainInput','imgUrl'].forEach(id => document.getElementById(id).value = '');
+  uploadedImageDataURL = null;
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('imgPreview').src = '';
+  document.getElementById('imgFile').value = '';
+  document.getElementById('titleCount').textContent = '0 / 120';
+  document.getElementById('descCount').textContent  = '0 / 200';
+  document.getElementById('status').style.display = 'none';
+});
+
+// ── Status helper ─────────────────────────────────────────────
+function showErr(msg) {
+  const el = document.getElementById('status');
+  el.textContent = msg; el.className = 'err'; el.style.display = 'block';
+}
+
+// ── Canvas helpers ────────────────────────────────────────────
+function wrapText(ctx, text, x, y, maxW, lineH, maxLines) {
+  const words = text.split(' ');
+  let line = '', drawn = 0;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + (line ? ' ' : '') + words[i];
+    if (ctx.measureText(test).width > maxW && line) {
+      if (drawn >= maxLines - 1) {
+        while (ctx.measureText(line + '…').width > maxW && line.length)
+          line = line.slice(0, -1).trimEnd();
+        ctx.fillText(line + '…', x, y);
+        return y + lineH;
       }
-      ctx.fillText(line,x,y);y+=lineH;drawn++;line=words[i];
-    }else line=test;
+      ctx.fillText(line, x, y); y += lineH; drawn++; line = words[i];
+    } else line = test;
   }
-  if(line)ctx.fillText(line,x,y);
-  return y+lineH;
+  if (line) ctx.fillText(line, x, y);
+  return y + lineH;
 }
 
-function drawOverlay(ctx,w,h){
-  const g=ctx.createLinearGradient(0,0,0,h);
-  g.addColorStop(0,'rgba(13,15,20,0)');
-  g.addColorStop(0.55,'rgba(13,15,20,0)');
-  g.addColorStop(1,'rgba(13,15,20,1)');
-  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+function drawOverlay(ctx, w, h) {
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0,    'rgba(13,15,20,0)');
+  g.addColorStop(0.55, 'rgba(13,15,20,0)');
+  g.addColorStop(1,    'rgba(13,15,20,1)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
 }
 
-function drawPlaceholder(ctx,w,h){
-  ctx.fillStyle='#12151e';ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle='#1a1d28';ctx.lineWidth=1;
-  for(let i=0;i<w;i+=48){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke()}
-  for(let j=0;j<h;j+=48){ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(w,j);ctx.stroke()}
-  ctx.fillStyle='#2a2d3a';ctx.font='26px DM Sans,sans-serif';
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('No Image Available',w/2,h/2);ctx.textAlign='left';
+function drawPlaceholder(ctx, w, h) {
+  ctx.fillStyle = '#12151e'; ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = '#1a1d28'; ctx.lineWidth = 1;
+  for (let i = 0; i < w; i += 48) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,h); ctx.stroke(); }
+  for (let j = 0; j < h; j += 48) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(w,j); ctx.stroke(); }
+  ctx.fillStyle = '#2a2d3a'; ctx.font = '26px DM Sans,sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('No Image', w/2, h/2); ctx.textAlign = 'left';
 }
 
-function loadImg(src){
-  return new Promise((res,rej)=>{
-    const try1=new Image(); try1.crossOrigin='anonymous';
-    try1.onload=()=>res(try1);
-    try1.onerror=()=>{
-      const try2=new Image(); try2.crossOrigin='anonymous';
-      try2.onload=()=>res(try2);
-      try2.onerror=()=>rej();
-      try2.src='https://wsrv.nl/?url='+encodeURIComponent(src)+'&w=1080';
-    };
-    try1.src=src;
+function loadImg(src) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload  = () => res(img);
+    img.onerror = () => rej();
+    img.src = src;
   });
 }
 
-async function generateCard(){
-  const headline=document.getElementById('titleInput').value.trim();
-  const summary =document.getElementById('descInput').value.trim();
-  const imageUrl=document.getElementById('imgInput').value.trim();
-  const domain  =document.getElementById('domainInput').value.trim();
-  if(!headline){setStatus('Please add a headline first.','err');return;}
-  setStatus('<span class="spin"></span>Drawing card…','loading');
-  const canvas=document.getElementById('cardCanvas');
-  const ctx=canvas.getContext('2d');
-  const{w:W,h:H,imgH:IH,pad:PAD}=CARD;
-  ctx.fillStyle=CARD.bgColor;ctx.fillRect(0,0,W,H);
-  if(imageUrl){
-    try{
-      const img=await loadImg(imageUrl);
-      const sr=img.width/img.height,tr=W/IH;
-      let sx,sy,sw,sh;
-      if(sr>tr){sh=img.height;sw=sh*tr;sx=(img.width-sw)/2;sy=0;}
-      else{sw=img.width;sh=sw/tr;sx=0;sy=(img.height-sh)/2;}
-      ctx.globalAlpha=0.9;ctx.drawImage(img,sx,sy,sw,sh,0,0,W,IH);ctx.globalAlpha=1;
-      drawOverlay(ctx,W,IH);
-    }catch(_){drawPlaceholder(ctx,W,IH);}
-  }else{drawPlaceholder(ctx,W,IH);}
-  const sy2=IH+26;
-  ctx.fillStyle=CARD.accent;ctx.beginPath();ctx.roundRect(PAD,sy2,68,6,3);ctx.fill();
-  ctx.fillStyle=CARD.headlineCol;
-  ctx.font=`700 ${CARD.headSz}px 'Bebas Neue',sans-serif`;ctx.textBaseline='top';
-  let cy=sy2+24;
-  cy=wrapText(ctx,headline.toUpperCase(),PAD,cy,W-PAD*2,CARD.headSz+10,3);
-  if(summary){
-    cy+=12;ctx.fillStyle=CARD.summaryCol;
-    ctx.font=`400 ${CARD.sumSz}px 'DM Sans',sans-serif`;
-    cy=wrapText(ctx,summary,PAD,cy,W-PAD*2,CARD.sumSz+10,3);
+// ── Main generate function ────────────────────────────────────
+async function generateCard() {
+  const headline = document.getElementById('titleInput').value.trim();
+  const summary  = document.getElementById('descInput').value.trim();
+  const domain   = document.getElementById('domainInput').value.trim();
+  const imgUrl   = document.getElementById('imgUrl').value.trim();
+
+  if (!headline) { showErr('Please enter a headline before generating.'); return; }
+
+  document.getElementById('status').style.display = 'none';
+
+  const canvas = document.getElementById('cardCanvas');
+  const ctx    = canvas.getContext('2d');
+  const { w:W, h:H, imgH:IH, pad:PAD } = CARD;
+
+  // Background
+  ctx.fillStyle = CARD.bgColor; ctx.fillRect(0, 0, W, H);
+
+  // Determine image source: uploaded file → pasted URL → placeholder
+  const imageSrc = uploadedImageDataURL || imgUrl || null;
+
+  if (imageSrc) {
+    try {
+      const img = await loadImg(imageSrc);
+      const sr = img.width / img.height, tr = W / IH;
+      let sx, sy, sw, sh;
+      if (sr > tr) { sh = img.height; sw = sh * tr; sx = (img.width - sw) / 2; sy = 0; }
+      else         { sw = img.width;  sh = sw / tr; sx = 0; sy = (img.height - sh) / 2; }
+      ctx.globalAlpha = 0.92; ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, IH); ctx.globalAlpha = 1;
+      drawOverlay(ctx, W, IH);
+    } catch (_) { drawPlaceholder(ctx, W, IH); }
+  } else {
+    drawPlaceholder(ctx, W, IH);
   }
-  if(domain){
-    cy+=20;ctx.fillStyle=CARD.accent;
-    ctx.font=`600 ${CARD.brandSz}px 'DM Sans',sans-serif`;
-    ctx.fillText('🔗  '+domain,PAD,cy);
+
+  // Accent stripe
+  const stripeY = IH + 26;
+  ctx.fillStyle = CARD.accent;
+  ctx.beginPath(); ctx.roundRect(PAD, stripeY, 68, 6, 3); ctx.fill();
+
+  // Headline
+  ctx.fillStyle = CARD.headlineCol;
+  ctx.font = `700 ${CARD.headSz}px 'Bebas Neue', sans-serif`;
+  ctx.textBaseline = 'top';
+  let cy = stripeY + 24;
+  cy = wrapText(ctx, headline.toUpperCase(), PAD, cy, W - PAD*2, CARD.headSz + 10, 3);
+
+  // Summary
+  if (summary) {
+    cy += 12;
+    ctx.fillStyle = CARD.summaryCol;
+    ctx.font = `400 ${CARD.sumSz}px 'DM Sans', sans-serif`;
+    cy = wrapText(ctx, summary, PAD, cy, W - PAD*2, CARD.sumSz + 10, 3);
   }
-  const by=H-50;
-  ctx.strokeStyle=CARD.dividerCol;ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(PAD,by-14);ctx.lineTo(W-PAD,by-14);ctx.stroke();
-  ctx.fillStyle=CARD.brandCol;ctx.font=`400 ${CARD.brandSz}px 'DM Sans',sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='top';
-  ctx.fillText(CARD.brandText,W/2,by);ctx.textAlign='left';
-  document.getElementById('outputSection').style.display='block';
-  document.getElementById('outputSection').scrollIntoView({behavior:'smooth',block:'start'});
-  clearStatus();
+
+  // Source
+  if (domain) {
+    cy += 20;
+    ctx.fillStyle = CARD.accent;
+    ctx.font = `600 ${CARD.brandSz}px 'DM Sans', sans-serif`;
+    ctx.fillText('🔗  ' + domain, PAD, cy);
+  }
+
+  // Divider + branding
+  const by = H - 50;
+  ctx.strokeStyle = CARD.dividerCol; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD, by - 14); ctx.lineTo(W - PAD, by - 14); ctx.stroke();
+  ctx.fillStyle = CARD.brandCol;
+  ctx.font = `400 ${CARD.brandSz}px 'DM Sans', sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(CARD.brandText, W / 2, by);
+  ctx.textAlign = 'left';
+
+  // Show output
+  document.getElementById('outputSection').style.display = 'block';
+  document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-document.getElementById('generateBtn').addEventListener('click',generateCard);
-document.getElementById('downloadBtn').addEventListener('click',()=>{
-  const canvas=document.getElementById('cardCanvas');
-  const name=(document.getElementById('domainInput').value.trim().replace(/\./g,'_')||'news_card')+'_card.jpg';
-  const a=document.createElement('a');a.download=name;
-  a.href=canvas.toDataURL('image/jpeg',0.93);a.click();
+// ── Download ──────────────────────────────────────────────────
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const canvas = document.getElementById('cardCanvas');
+  const name = (document.getElementById('domainInput').value.trim().replace(/\s+/g,'_') || 'news') + '_card.jpg';
+  const a = document.createElement('a');
+  a.download = name; a.href = canvas.toDataURL('image/jpeg', 0.93); a.click();
 });
-document.getElementById('urlInput').addEventListener('keydown',e=>{
-  if(e.key==='Enter')document.getElementById('fetchBtn').click();
+
+// ── Make another card ─────────────────────────────────────────
+document.getElementById('newCardBtn').addEventListener('click', () => {
+  document.getElementById('outputSection').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+document.getElementById('generateBtn').addEventListener('click', generateCard);
 </script>
 </body>
 </html>
