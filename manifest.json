@@ -1,0 +1,43 @@
+{
+  "name": "फलोदी News Card Studio",
+  "short_name": "फलोदी News",
+  "description": "फलोदी का अपना न्यूज़ कार्ड जेनरेटर",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#1C1007",
+  "theme_color": "#1C1007",
+  "orientation": "portrait",
+  "lang": "hi",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["news", "productivity"],
+  "shortcuts": [
+    {
+      "name": "नया कार्ड बनाएं",
+      "short_name": "नया कार्ड",
+      "description": "तुरंत नया न्यूज़ कार्ड",
+      "url": "/index.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
