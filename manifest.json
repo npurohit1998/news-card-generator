@@ -2,7 +2,7 @@
   "name": "फलोदी News Card Studio",
   "short_name": "फलोदी News",
   "description": "फलोदी का अपना न्यूज़ कार्ड जेनरेटर",
-  "start_url": "/index.html",
+  "start_url": "/news-card-generator/index.html",
   "display": "standalone",
   "background_color": "#1C1007",
   "theme_color": "#1C1007",
